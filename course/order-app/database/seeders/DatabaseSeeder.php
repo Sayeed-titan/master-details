@@ -2,24 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
+// LESSON: DatabaseSeeder is the main entry point for all seeders.
+// You register all your seeders here and run: php artisan db:seed
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // LESSON: call() runs the listed seeders in order
+        $this->call([
+            OrderSeeder::class,
         ]);
     }
 }
