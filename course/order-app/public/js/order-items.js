@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // LESSON: Bootstrap 5 modals are controlled via JS using bootstrap.Modal
     const itemModal = new bootstrap.Modal(itemModalEl);
 
+    // ─── Helper: toggle loading state on Save button ──────────────────────────
+    function setSaving(loading) {
+        saveItemBtn.disabled = loading;
+        saveItemBtn.textContent = loading ? 'Saving...' : 'Save Item';
+    }
+
     // ─── Helper: show error inside modal ──────────────────────────────────────
     function showModalError(msg) {
         itemModalError.textContent = msg;
@@ -152,25 +158,25 @@ document.addEventListener('DOMContentLoaded', function () {
         if (itemId) {
             // ── EDIT: PUT request ──────────────────────────────────────────────
             // LESSON: Axios PUT sends updated data to the API
+            setSaving(true);
             axios.put(`/api/orders/${ORDER_ID}/items/${itemId}`, payload)
                 .then(res => {
                     const item = res.data.data;
-
-                    // Update the existing row in place
                     const row = document.getElementById(`item-row-${item.id}`);
                     row.outerHTML = buildRow(item);
-
                     itemModal.hide();
                     refreshOrderTotal();
                 })
                 .catch(err => {
                     const msg = err.response?.data?.message || 'Failed to update item.';
                     showModalError(msg);
-                });
+                })
+                .finally(() => setSaving(false));
 
         } else {
             // ── ADD: POST request ──────────────────────────────────────────────
             // LESSON: Axios POST sends new item data to the API
+            setSaving(true);
             axios.post(`/api/orders/${ORDER_ID}/items`, payload)
                 .then(res => {
                     const item = res.data.data;
@@ -188,7 +194,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .catch(err => {
                     const msg = err.response?.data?.message || 'Failed to add item.';
                     showModalError(msg);
-                });
+                })
+                .finally(() => setSaving(false));
         }
     });
 

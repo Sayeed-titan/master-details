@@ -16,7 +16,21 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // LESSON: Any request to /api/* always gets a JSON error response.
+        // Without this, Laravel might return an HTML error page for API requests.
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        // LESSON: Render a clean JSON structure for all API exceptions.
+        // This gives a consistent { message, errors } shape on every error.
+        $exceptions->render(function (\Throwable $e, Request $request) {
+            if ($request->is('api/*')) {
+                $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+
+                return response()->json([
+                    'message' => $e->getMessage() ?: 'Server Error',
+                ], $status);
+            }
+        });
     })->create();
