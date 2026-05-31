@@ -63,7 +63,7 @@ class OrderItemController extends Controller
 
         $item->update($data);
 
-        $this->+($order);
+        $this->recalculateTotal($order);
 
         return new OrderItemResource($item);
     }
