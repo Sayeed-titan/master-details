@@ -25,7 +25,8 @@
             </div>
             <div class="col-md-4">
                 <small class="text-muted">Total Amount</small>
-                <p class="fw-bold fs-5">${{ number_format($order->total_amount, 2) }}</p>
+                {{-- LESSON: id="orderTotal" lets our JS update this value after add/edit/delete --}}
+                <p class="fw-bold fs-5" id="orderTotal">${{ number_format($order->total_amount, 2) }}</p>
             </div>
             <div class="col-md-4">
                 <small class="text-muted">Date</small>
@@ -125,5 +126,6 @@
 @endsection
 
 @section('scripts')
-    {{-- Phase 4: JS will go in a separate file and be loaded here --}}
+    {{-- LESSON: asset() generates the correct URL to our public/js file --}}
+    <script src="{{ asset('js/order-items.js') }}"></script>
 @endsection

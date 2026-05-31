@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order App — @yield('title', 'Orders')</title>
 
+    {{-- LESSON: CSRF token in meta tag — Axios reads this and sends it with every request --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     {{-- Bootstrap 5 CSS from CDN --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -50,6 +53,16 @@
 
     {{-- Bootstrap 5 JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {{-- Axios — HTTP client for making API calls from the browser --}}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    {{-- LESSON: We set the CSRF token as a default header for all Axios requests.
+         Laravel requires this token on every POST/PUT/DELETE request to prevent
+         Cross-Site Request Forgery attacks. --}}
+    <script>
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').content;
+    </script>
 
     {{-- LESSON: @yield('scripts') lets child views add their own JS at the bottom --}}
     @yield('scripts')
